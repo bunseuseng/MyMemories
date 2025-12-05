@@ -1,37 +1,32 @@
 package com.group5.MyMemories.entity;
 
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import jakarta.persistence.Table;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table (name = "users")
+@Table(name = "users")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
 
     @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
-    
+
     @Column(nullable = false, unique = true)
     private String email;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Memory> memories = new ArrayList<>();;
 }
