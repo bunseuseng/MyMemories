@@ -45,11 +45,11 @@ public class AuthServiceImpl implements AuthService {
                     .body(RegisterResponse.builder().email("Email already exists").build());
         }
 
-        User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
 
         userRepository.save(user);
         String token = jwtUtil.generateToken(user.getEmail());
