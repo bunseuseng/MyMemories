@@ -23,64 +23,47 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public ResponseEntity<RegisterResponse> register(RegisterRequest request) {
-
-        if (request.getUsername() == null || request.getUsername().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RegisterResponse.builder().username("Username required").build());
-        }
-
-        if (request.getEmail() == null || request.getEmail().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RegisterResponse.builder().email("Email required").build());
-        }
-
-        if (request.getPassword() == null || request.getPassword().length() < 6) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RegisterResponse.builder().password("Password must be at least 6 characters").build());
-        }
+    public RegisterResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(RegisterResponse.builder().email("Email already exists").build());
+            throw new RuntimeException("Email already exists");
         }
 
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
+        user.setEnabled(true);
 
         userRepository.save(user);
+
         String token = jwtUtil.generateToken(user.getEmail());
 
-        RegisterResponse response = RegisterResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .token(token)
-                .build();
+        RegisterResponse response = new RegisterResponse();
+        response.setId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+        response.setToken(token);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return response;
     }
 
     @Override
-    public ResponseEntity<LoginResponse> login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElse(null);
+    public LoginResponse login(LoginRequest request) {
 
-        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(LoginResponse.builder().email("Invalid email or password").build());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
-        LoginResponse response = LoginResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .token(token)
-                .build();
-        return ResponseEntity.ok(response);
+
+        LoginResponse response = new LoginResponse();
+        response.setEmail(user.getEmail());
+        response.setToken(token);
+
+        return response;
     }
 }

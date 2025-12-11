@@ -2,12 +2,14 @@ package com.group5.MyMemories.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -17,12 +19,12 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column()
-    private String password;
-
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Memory> memories = new ArrayList<>();;
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private boolean enabled;
 }
