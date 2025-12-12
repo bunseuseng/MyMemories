@@ -22,10 +22,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/memories/**").permitAll()
+//                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

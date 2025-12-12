@@ -1,16 +1,17 @@
 package com.group5.MyMemories.config;
 
 import com.group5.MyMemories.entity.Category;
-import com.group5.MyMemories.repositories.CategoryRepoitories;
+import com.group5.MyMemories.repositories.CategoryRepository;
+//import com.group5.MyMemories.repositories.MemoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class seedCategory {
+public class seedCategory{
 
-    @Bean
-    CommandLineRunner initCategories(CategoryRepoitories categoryRepositories) {
+@Bean
+    CommandLineRunner initCategories(CategoryRepository categoryRepositories) {
         return args -> {
 
             String[] defaultCategories = {"Travel", "Food", "Work", "Personal", "Fitness"};
