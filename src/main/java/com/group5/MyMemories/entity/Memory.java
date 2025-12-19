@@ -1,5 +1,8 @@
 package com.group5.MyMemories.entity;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
@@ -7,7 +10,6 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Memory {
 
     @Id
@@ -17,10 +19,23 @@ public class Memory {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
-    private String content;
+    @Column(length = 1000)
+    private String description;
+    
+    private LocalDateTime createdAt;  // ✅ this must exist
+    private LocalDateTime updatedAt;  // ✅ this must exist
 
+   
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
+    
+    // Many memories belong to one category
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private SeedCategory category;
+    
+    @OneToMany(mappedBy = "memory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemoryImageEntity> images;
+
 }
