@@ -7,8 +7,8 @@ services:
     container_name: postgres-db
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123123
-      POSTGRES_DB: springboot
+      POSTGRES_PASSWORD: 041224
+      POSTGRES_DB: memory
     ports:
       - "5432:5432"
     healthcheck:
